@@ -13,4 +13,25 @@
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
+
+    <style name="LoginTheme" parent="FirebaseUI">
+
+        <!-- Background color of the login dialog -->
+        <item name="android:windowBackground">@color/white</item>
+
+        <!-- Underline and Hint of the edittext -->
+        <item name="colorControlActivated">@color/green_dark</item>
+
+        <!-- Top bar color of the login dialog -->
+        <item name="colorPrimary">@color/green</item>
+        <item name="colorPrimaryDark">@color/green_dark</item>
+
+        <!-- Typed in text color into the edittext -->
+        <item name="android:textColorPrimary">@color/green_dark</item>
+
+        <!-- Remove the action bar from the login dialog -->
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+
+    </style>
 </resources>
