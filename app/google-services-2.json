@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "873296640549",
+    "project_id": "roomateshoppingapp-c50dc",
+    "storage_bucket": "roomateshoppingapp-c50dc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:873296640549:android:8e997380f7c1f278d69dcc",
+        "android_client_info": {
+          "package_name": "edu.uga.cs.shoppinglistapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "873296640549-la5qiuaer55a3ai04f5vdmj7t1gca6kg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "edu.uga.cs.shoppinglistapp",
+            "certificate_hash": "45e157bd46ce3c05981e33c1445b64e722760520"
+          }
+        },
+        {
+          "client_id": "873296640549-96etbbjcr2ajn0k8gl50id735i65bf4l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC-QorWJTXj_rpJj4w2Q-XHU8b450wlP04"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "873296640549-96etbbjcr2ajn0k8gl50id735i65bf4l.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
