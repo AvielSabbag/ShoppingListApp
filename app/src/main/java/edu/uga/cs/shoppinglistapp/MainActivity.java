@@ -108,4 +108,13 @@ public class MainActivity extends AppCompatActivity {
                     Toast.LENGTH_SHORT).show();
         }
     }
+
+    private class RegisterButtonClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View view) {
+            // start the user registration activity
+            Intent intent = new Intent(view.getContext(), RegisterActivity.class);
+            view.getContext().startActivity(intent);
+        }
+    }
 }
