@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">ShoppingListApp</string>
     <string name="SplashScreen1">The best <b>shopping list app</b> that makes sure you stay even</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="ShoppingListBlurb">Below is a list of items that need to be bought for your apartment.
+        Add a new item or select one or more items from the list to move them to the "Recently Purchased List" .</string>
+    <string name="RecentlyPurchasedBlurb">Below is a list of recently purchased items, along with their price and who bought them. Select "Settle the Score"
+        to clear the Recently Purchased List and calculate the amount owed each roommate</string>
 </resources>
