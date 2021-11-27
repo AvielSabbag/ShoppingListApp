@@ -3,6 +3,7 @@ package edu.uga.cs.shoppinglistapp;
 public class GroceryItem {
     private String itemName;
     private String description;
+    private String userSubmitted;
 
     public GroceryItem() {
         this.itemName = null;
@@ -30,8 +31,9 @@ public class GroceryItem {
         this.description = description;
     }
 
-
+    public String getUserSubmitted(){return userSubmitted;}
+    public void setUserSubmitted(String user) { userSubmitted = user;}
     public String toString() {
-        return itemName + " " + description;
+        return itemName + " added by:  " + userSubmitted + "\n" + description;
     }
 }
