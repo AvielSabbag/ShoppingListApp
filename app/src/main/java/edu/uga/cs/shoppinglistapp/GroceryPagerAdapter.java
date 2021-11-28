@@ -1,7 +1,10 @@
 package edu.uga.cs.shoppinglistapp;
 
+import android.content.Context;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
@@ -12,11 +15,11 @@ public class GroceryPagerAdapter extends FragmentStateAdapter {
 
     private static List<GroceryItem> shoppingList;
     private static List<PurchasedItem> purchasedItemList;
+    private static Context context;
 
-    public GroceryPagerAdapter(Fragment fm, List<GroceryItem> groceryList, List<PurchasedItem> purchasedList) {
+    public GroceryPagerAdapter(FragmentActivity fm, Context con) {
         super(fm);
-        this.shoppingList = groceryList;
-        purchasedItemList = purchasedList;
+        context = con;
 
     }
 
@@ -24,9 +27,9 @@ public class GroceryPagerAdapter extends FragmentStateAdapter {
     @Override
     public Fragment createFragment(int position) {
         if(position == 0) {
-            return new ShoppingListFragment(shoppingList);
+            return new ShoppingListFragment();
         } else {
-            return new RecentlyPurchasedFragment(purchasedItemList);
+            return new RecentlyPurchasedFragment();
         }
     }
 
