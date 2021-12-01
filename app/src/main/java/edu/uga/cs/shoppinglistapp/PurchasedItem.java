@@ -7,7 +7,7 @@ public class PurchasedItem {
 
     public GroceryItem getItemPurchased() {return itemPurchased;}
     public void setItemPurchased(GroceryItem item){itemPurchased = item;}
-    public Double getPrice() {return price;}
+    public double getPrice() {return price;}
     public void setPrice(Double price){this.price = price;}
     public String getUserBought() {return userBought;}
     public void setUserBought(String user) {userBought = user;}

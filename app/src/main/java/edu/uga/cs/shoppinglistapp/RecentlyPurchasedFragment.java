@@ -2,44 +2,46 @@ package edu.uga.cs.shoppinglistapp;
 
 import android.os.Bundle;
 
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link RecentlyPurchasedFragment#newInstance} factory method to
- * create an instance of this fragment.
+
  */
 public class RecentlyPurchasedFragment extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-
-
-    // TODO: Rename and change types of parameters
-
+    private List<PurchasedItem> purchasedList;
+    private RecyclerView recyclerView;
+    private RecyclerView.LayoutManager layoutManager;
+    private RecyclerView.Adapter recyclerAdapter;
 
     public RecentlyPurchasedFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment RecentlyPurchasedFragment.
-     */
     // TODO: Rename and change types and number of parameters
-    public static RecentlyPurchasedFragment newInstance(String param1, String param2) {
+    public static RecentlyPurchasedFragment newInstance() {
         RecentlyPurchasedFragment fragment = new RecentlyPurchasedFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -47,16 +49,66 @@ public class RecentlyPurchasedFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_recently_purchased, container, false);
+        View fullView = inflater.inflate(R.layout.fragment_recently_purchased, container, false);
+
+        Button newItem = fullView.findViewById(R.id.button5);
+        Button purchasedItem = fullView.findViewById(R.id.button6);
+
+        newItem.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v) {
+                DialogFragment newFragment = new DialogFragment();
+                showDialogFragment(newFragment);
+            }
+        });
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("purchasedList");
+        recyclerView = (RecyclerView) fullView.findViewById(R.id.recyclerView);
+
+        purchasedList = new ArrayList<PurchasedItem>();
+
+        layoutManager = new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager( layoutManager );
+
+        myRef.addListenerForSingleValueEvent( new ValueEventListener() {
+            @Override
+            public void onDataChange( DataSnapshot snapshot ) {
+                // Once we have a DataSnapshot object, knowing that this is a list,
+                // we need to iterate over the elements and place them on a List.
+                for( DataSnapshot postSnapshot: snapshot.getChildren() ) {
+                    PurchasedItem purchasedItem = postSnapshot.getValue(PurchasedItem.class);
+                    purchasedList.add(purchasedItem);
+                }
+
+                // Now, create a JobLeadRecyclerAdapter to populate a ReceyclerView to display the job leads.
+                for(int i = 0; i< purchasedList.size(); i++) {
+                    Log.d("ShoppingListFragment", "onDataChange: Item #"+ i + ": " + purchasedList.get(i).toString());
+                }
+                recyclerAdapter = new PurchasedRecyclerAdapter( purchasedList);
+                recyclerView.setAdapter( recyclerAdapter );
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d("PurchasedListFragment", "onCancelled: The read failed: " + databaseError.getMessage());
+            }
+        });
+
+        return fullView;
+    }
+
+    public void onFinishNewPurchasedItemDialog(PurchasedItem purchasedItem) {
+
+    }
+    void showDialogFragment( DialogFragment newFragment ) {
+        newFragment.show(getActivity().getSupportFragmentManager(), null);
     }
 }
