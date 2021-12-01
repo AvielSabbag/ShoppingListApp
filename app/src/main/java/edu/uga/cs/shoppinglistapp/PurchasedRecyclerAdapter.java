@@ -11,7 +11,7 @@ import java.util.List;
 
 public class PurchasedRecyclerAdapter extends RecyclerView.Adapter<PurchasedRecyclerAdapter.PurchasedItemHolder> {
     private List<PurchasedItem> purchasedList;
-
+    //Comment
     public PurchasedRecyclerAdapter(List<PurchasedItem> pList) {
         purchasedList = pList;
     }
