@@ -22,32 +22,34 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="50dp"
-                android:layout_marginTop="25dp"
+                android:layout_marginTop="5dp"
                 android:layout_marginRight="25dp"
                 android:fontFamily="@font/fugaz_one"
                 android:text="TextView"
-                android:textSize="20sp" />
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="75dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="5dp"
                 android:layout_marginRight="25dp"
                 android:fontFamily="@font/cairo_semibold"
-                android:text="TextView" />
+                android:text="TextView"
+                android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/userSubmitted"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="75dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="5dp"
                 android:layout_marginRight="25dp"
-                android:layout_marginBottom="25dp"
+                android:layout_marginBottom="10dp"
                 android:fontFamily="@font/cairo_semibold"
-                android:text="TextView" />
+                android:text="TextView"
+                android:textSize="12sp" />
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>
