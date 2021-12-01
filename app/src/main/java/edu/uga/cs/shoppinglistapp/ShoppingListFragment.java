@@ -80,7 +80,7 @@ public class ShoppingListFragment extends Fragment implements AddGroceryItemDial
 
         shoppingList = new ArrayList<GroceryItem>();
 
-        layoutManager = new LinearLayoutManager(getContext());
+        layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager( layoutManager );
 
         myRef.addListenerForSingleValueEvent( new ValueEventListener() {

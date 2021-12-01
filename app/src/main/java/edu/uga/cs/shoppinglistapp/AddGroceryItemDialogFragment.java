@@ -82,10 +82,10 @@ public class AddGroceryItemDialogFragment extends DialogFragment {
                 }
             });
 
-            GroceryItem groceryItem = new GroceryItem(itemNameString, itemDescriptionString);
+            GroceryItem groceryItem = new GroceryItem(itemDescriptionString, itemNameString);
 
             // get the Activity's listener to add the new job lead
-            AddGroceryItemDialogListener listener = (AddGroceryItemDialogListener) ();
+            AddGroceryItemDialogListener listener = (AddGroceryItemDialogListener) getActivity().getSupportFragmentManager().findFragmentByTag("f0");
             // add the new job lead
             listener.onFinishNewGroceryItemDialog( groceryItem);
             // close the dialog
