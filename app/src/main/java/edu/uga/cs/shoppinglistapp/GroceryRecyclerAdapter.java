@@ -4,6 +4,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,6 +15,7 @@ import java.util.List;
 
 public class GroceryRecyclerAdapter extends RecyclerView.Adapter<GroceryRecyclerAdapter.GroceryItemHolder> {
     private List<GroceryItem> shoppingList;
+    private List<GroceryItem> purchasingList;
 
     public GroceryRecyclerAdapter(List<GroceryItem> sList) {
         shoppingList = sList;
@@ -22,6 +24,7 @@ public class GroceryRecyclerAdapter extends RecyclerView.Adapter<GroceryRecycler
         TextView itemName;
         TextView description;
         TextView userSubmitted;
+        CheckBox checkBox;
 
         public GroceryItemHolder(View itemView) {
             super(itemView);
@@ -45,7 +48,7 @@ public class GroceryRecyclerAdapter extends RecyclerView.Adapter<GroceryRecycler
 
         holder.itemName.setText( groceryItem.getItemName());
         holder.description.setText(groceryItem.getDescription());
-        holder.userSubmitted.setText(groceryItem.getUserSubmitted());
+        holder.userSubmitted.setText("added by: " + groceryItem.getUserSubmitted());
     }
 
     @Override

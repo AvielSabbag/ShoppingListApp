@@ -68,21 +68,14 @@ public class AddGroceryItemDialogFragment extends DialogFragment {
         public void onClick(DialogInterface dialog, int which) {
             String itemNameString = itemName.getText().toString();
             String itemDescriptionString = itemDescription.getText().toString();
-            FirebaseAuth.getInstance().addAuthStateListener(new FirebaseAuth.AuthStateListener() {
-                @Override
-                public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                    FirebaseUser currentUser = firebaseAuth.getCurrentUser();
-                    if( currentUser != null ) {
-                        // User is signed in
-                        userSubmitted = currentUser.getEmail();
-                    } else {
-                        // User is signed out
-                        userSubmitted = "empty";
-                    }
-                }
-            });
+            FirebaseUser currentUser  = FirebaseAuth.getInstance().getCurrentUser();
+            if(currentUser != null ) {
+                userSubmitted = currentUser.getEmail();
+            } else {
+                userSubmitted = "empty";
+            }
 
-            GroceryItem groceryItem = new GroceryItem(itemDescriptionString, itemNameString);
+            GroceryItem groceryItem = new GroceryItem(itemDescriptionString, itemNameString, userSubmitted);
 
             // get the Activity's listener to add the new job lead
             AddGroceryItemDialogListener listener = (AddGroceryItemDialogListener) getActivity().getSupportFragmentManager().findFragmentByTag("f0");

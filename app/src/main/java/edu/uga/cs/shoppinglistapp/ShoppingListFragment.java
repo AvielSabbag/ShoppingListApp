@@ -74,6 +74,7 @@ public class ShoppingListFragment extends Fragment implements AddGroceryItemDial
                 showDialogFragment(newFragment);
             }
         });
+
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("shoppingList");
         recyclerView = (RecyclerView) fullView.findViewById(R.id.recyclerView);

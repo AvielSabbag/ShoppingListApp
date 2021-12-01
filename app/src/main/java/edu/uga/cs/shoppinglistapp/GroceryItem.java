@@ -10,9 +10,10 @@ public class GroceryItem {
         this.description = null;
     }
 
-    public GroceryItem( String itemName, String description ) {
+    public GroceryItem( String itemName, String description , String userSubmit) {
         this.itemName = itemName;
         this.description = description;
+        this.userSubmitted = userSubmit;
     }
 
     public String getItemName() {
