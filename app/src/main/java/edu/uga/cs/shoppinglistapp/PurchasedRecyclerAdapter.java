@@ -24,13 +24,13 @@ public class PurchasedRecyclerAdapter extends RecyclerView.Adapter<PurchasedRecy
             super(itemView);
 
             itemPurchased = (TextView) itemView.findViewById(R.id.itemPurchased);
-            price  = (TextView) itemView.findViewById(R.id.price);
-            userBought = (TextView) itemView.findViewById(R.id.userBought);
+            price  = (TextView) itemView.findViewById(R.id.cost);
+            userBought = (TextView) itemView.findViewById(R.id.userBoughtText);
         }
     }
 
     public PurchasedRecyclerAdapter.PurchasedItemHolder onCreateViewHolder(ViewGroup parent, int viewType ) {
-        View view = LayoutInflater.from( parent.getContext()).inflate( R.layout.grocery_item, parent, false );
+        View view = LayoutInflater.from( parent.getContext()).inflate( R.layout.purchased_item, parent, false );
         return new PurchasedRecyclerAdapter.PurchasedItemHolder( view );
     }
 

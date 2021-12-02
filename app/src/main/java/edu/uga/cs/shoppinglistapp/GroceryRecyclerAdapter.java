@@ -1,15 +1,12 @@
 package edu.uga.cs.shoppinglistapp;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
-
-import org.w3c.dom.Text;
 
 import java.util.List;
 
@@ -24,14 +21,15 @@ public class GroceryRecyclerAdapter extends RecyclerView.Adapter<GroceryRecycler
         TextView itemName;
         TextView description;
         TextView userSubmitted;
-        CheckBox checkBox;
+        Button purchase;
 
         public GroceryItemHolder(View itemView) {
             super(itemView);
 
-            itemName = (TextView) itemView.findViewById(R.id.itemName);
-            description = (TextView) itemView.findViewById(R.id.description);
-            userSubmitted = (TextView) itemView.findViewById(R.id.userSubmitted);
+            itemName = (TextView) itemView.findViewById(R.id.purchasedItem);
+            description = (TextView) itemView.findViewById(R.id.cost);
+            userSubmitted = (TextView) itemView.findViewById(R.id.userBoughtText);
+            purchase = (Button) itemView.findViewById(R.id.remove);
         }
     }
 
@@ -49,6 +47,13 @@ public class GroceryRecyclerAdapter extends RecyclerView.Adapter<GroceryRecycler
         holder.itemName.setText( groceryItem.getItemName());
         holder.description.setText(groceryItem.getDescription());
         holder.userSubmitted.setText("added by: " + groceryItem.getUserSubmitted());
+
+        holder.purchase.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
 
     @Override

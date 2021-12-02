@@ -22,6 +22,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -32,7 +33,7 @@ import java.util.List;
  * Use the {@link ShoppingListFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ShoppingListFragment extends Fragment implements AddGroceryItemDialogFragment.AddGroceryItemDialogListener {
+public class ShoppingListFragment extends Fragment implements AddGroceryItemDialogFragment.AddGroceryItemDialogListener, PurchaseItemDialogFragment.PurchaseItemDialogListener {
 
     private List<GroceryItem> shoppingList;
     private RecyclerView recyclerView;
@@ -152,5 +153,55 @@ public class ShoppingListFragment extends Fragment implements AddGroceryItemDial
     }
 
 
+    @Override
+    public void onFinishNewPurchaseDialog(PurchasedItem purchasedItem) {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference();
+        DatabaseReference purchasedList = database.getReference("purchasedList");
 
+        myRef.push().setValue( purchasedItem )
+                .addOnSuccessListener( new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+
+                        Log.d( "ShoppingListFragment", "Grocery Item Purchased: " + purchasedItem.toString() );
+                        // Show a quick confirmation
+                        Toast.makeText(getContext(), "Grocery Item Purchased by: " + purchasedItem.getUserBought(),
+                                Toast.LENGTH_SHORT).show();
+                        //possibly not do anything else but maybe notify purchased recycler and add item to list in fragment
+                    }
+                })
+                .addOnFailureListener( new OnFailureListener() {
+                    @Override
+                    public void onFailure(Exception e) {
+                        Toast.makeText( getContext(), "Failed to add grocery Item by: " + purchasedItem.getUserBought(),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+        Query purchaseQuery = myRef.child("shoppingList").orderByChild("itemName").equalTo(purchasedItem.getItemPurchased());
+
+        purchaseQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot purchaseSnapshot: dataSnapshot.getChildren()) {
+                    purchaseSnapshot.getRef().removeValue();
+
+                    for(int i = 0; i<shoppingList.size(); i++) {
+                        if(shoppingList.get(i).getItemName().equals(purchasedItem.getItemPurchased())) {
+                            shoppingList.remove(i);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e("ShoppingListFragment", "onCancelled", databaseError.toException());
+            }
+        });
+
+
+
+    }
 }

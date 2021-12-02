@@ -1,12 +1,17 @@
 package edu.uga.cs.shoppinglistapp;
 
 public class PurchasedItem {
-    private GroceryItem itemPurchased;
+    private String itemPurchased;
     private Double price;
     private String userBought;
 
-    public GroceryItem getItemPurchased() {return itemPurchased;}
-    public void setItemPurchased(GroceryItem item){itemPurchased = item;}
+    public PurchasedItem(String itemName, Double price, String userBought) {
+        itemPurchased = itemName;
+        this.price = price;
+        this.userBought = userBought;
+    }
+    public String getItemPurchased() {return itemPurchased;}
+    public void setItemPurchased(String item){itemPurchased = item;}
     public double getPrice() {return price;}
     public void setPrice(Double price){this.price = price;}
     public String getUserBought() {return userBought;}

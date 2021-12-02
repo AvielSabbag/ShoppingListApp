@@ -64,7 +64,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center|center_horizontal"
                 android:layout_marginRight="25dp"
-                android:text="Purchase" />
+                android:text="Remove" />
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>

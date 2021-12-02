@@ -71,7 +71,7 @@ public class RecentlyPurchasedFragment extends Fragment {
         });
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("purchasedList");
-        recyclerView = (RecyclerView) fullView.findViewById(R.id.recyclerView);
+        recyclerView = (RecyclerView) fullView.findViewById(R.id.purchaseListRecycler);
 
         purchasedList = new ArrayList<PurchasedItem>();
 
