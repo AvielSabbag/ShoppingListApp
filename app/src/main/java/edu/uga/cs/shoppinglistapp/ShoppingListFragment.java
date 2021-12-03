@@ -99,7 +99,7 @@ public class ShoppingListFragment extends Fragment implements AddGroceryItemDial
                 for(int i = 0; i< shoppingList.size(); i++) {
                     Log.d("ShoppingListFragment", "onDataChange: Item #"+ i + ": " + shoppingList.get(i).toString());
                 }
-                recyclerAdapter = new GroceryRecyclerAdapter( shoppingList );
+                recyclerAdapter = new GroceryRecyclerAdapter( shoppingList , getActivity());
                 recyclerView.setAdapter( recyclerAdapter );
             }
 
@@ -148,7 +148,7 @@ public class ShoppingListFragment extends Fragment implements AddGroceryItemDial
                 });
     }
 
-    void showDialogFragment( DialogFragment newFragment ) {
+    public void showDialogFragment( DialogFragment newFragment ) {
         newFragment.show(getActivity().getSupportFragmentManager(), null);
     }
 
@@ -159,7 +159,7 @@ public class ShoppingListFragment extends Fragment implements AddGroceryItemDial
         DatabaseReference myRef = database.getReference();
         DatabaseReference purchasedList = database.getReference("purchasedList");
 
-        myRef.push().setValue( purchasedItem )
+        purchasedList.push().setValue( purchasedItem )
                 .addOnSuccessListener( new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
@@ -169,6 +169,9 @@ public class ShoppingListFragment extends Fragment implements AddGroceryItemDial
                         Toast.makeText(getContext(), "Grocery Item Purchased by: " + purchasedItem.getUserBought(),
                                 Toast.LENGTH_SHORT).show();
                         //possibly not do anything else but maybe notify purchased recycler and add item to list in fragment
+                        RecentlyPurchasedFragment purchasedFragment = (RecentlyPurchasedFragment) getActivity().getSupportFragmentManager().findFragmentByTag("f1");
+                        purchasedFragment.addPurchasedItem(purchasedItem);
+                        purchasedFragment.notifyRecycler();
                     }
                 })
                 .addOnFailureListener( new OnFailureListener() {
@@ -190,6 +193,7 @@ public class ShoppingListFragment extends Fragment implements AddGroceryItemDial
                     for(int i = 0; i<shoppingList.size(); i++) {
                         if(shoppingList.get(i).getItemName().equals(purchasedItem.getItemPurchased())) {
                             shoppingList.remove(i);
+                            recyclerAdapter.notifyItemRemoved(i);
                         }
                     }
                 }

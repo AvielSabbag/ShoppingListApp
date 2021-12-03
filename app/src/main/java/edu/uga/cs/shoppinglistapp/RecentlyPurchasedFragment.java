@@ -32,7 +32,7 @@ public class RecentlyPurchasedFragment extends Fragment {
     private List<PurchasedItem> purchasedList;
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
-    private RecyclerView.Adapter recyclerAdapter;
+    private PurchasedRecyclerAdapter recyclerAdapter;
 
     public RecentlyPurchasedFragment() {
         // Required empty public constructor
@@ -58,17 +58,17 @@ public class RecentlyPurchasedFragment extends Fragment {
         // Inflate the layout for this fragment
         View fullView = inflater.inflate(R.layout.fragment_recently_purchased, container, false);
 
-        Button newItem = fullView.findViewById(R.id.button5);
-        Button purchasedItem = fullView.findViewById(R.id.button6);
+        //Button newItem = fullView.findViewById(R.id.button5);
+        //Button purchasedItem = fullView.findViewById(R.id.button6);
 
-        newItem.setOnClickListener(new View.OnClickListener(){
+        /**newItem.setOnClickListener(new View.OnClickListener(){
 
             @Override
             public void onClick(View v) {
                 DialogFragment newFragment = new DialogFragment();
                 showDialogFragment(newFragment);
             }
-        });
+        });*/
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("purchasedList");
         recyclerView = (RecyclerView) fullView.findViewById(R.id.purchaseListRecycler);
@@ -105,10 +105,14 @@ public class RecentlyPurchasedFragment extends Fragment {
         return fullView;
     }
 
-    public void onFinishNewPurchasedItemDialog(PurchasedItem purchasedItem) {
-
-    }
     void showDialogFragment( DialogFragment newFragment ) {
         newFragment.show(getActivity().getSupportFragmentManager(), null);
+    }
+
+    public void addPurchasedItem(PurchasedItem pItem) {
+        purchasedList.add(pItem);
+    }
+    public void notifyRecycler() {
+        recyclerAdapter.notifyItemInserted(purchasedList.size()-1);
     }
 }

@@ -1,5 +1,6 @@
 package edu.uga.cs.shoppinglistapp;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +24,7 @@ public class PurchasedRecyclerAdapter extends RecyclerView.Adapter<PurchasedRecy
         public PurchasedItemHolder(View itemView) {
             super(itemView);
 
-            itemPurchased = (TextView) itemView.findViewById(R.id.itemPurchased);
+            itemPurchased = (TextView) itemView.findViewById(R.id.purchasedItem);
             price  = (TextView) itemView.findViewById(R.id.cost);
             userBought = (TextView) itemView.findViewById(R.id.userBoughtText);
         }
@@ -38,13 +39,14 @@ public class PurchasedRecyclerAdapter extends RecyclerView.Adapter<PurchasedRecy
         PurchasedItem purchasedItem = purchasedList.get( position );
 
         holder.itemPurchased.setText((CharSequence) purchasedItem.getItemPurchased());
-        holder.price.setText((int) purchasedItem.getPrice());
+        holder.price.setText( String.valueOf( purchasedItem.getPrice()));
         holder.userBought.setText(purchasedItem.getUserBought());
 
     }
 
     @Override
     public int getItemCount() {
+        Log.d("PurchasedRecycler", "getItemCount: " + purchasedList.size());
         return purchasedList.size();
     }
 }

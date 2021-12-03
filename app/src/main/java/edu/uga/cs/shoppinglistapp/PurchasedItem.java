@@ -5,6 +5,11 @@ public class PurchasedItem {
     private Double price;
     private String userBought;
 
+    public PurchasedItem() {
+        itemPurchased = "empty";
+        this.price = 0.0;
+        this.userBought = "empty";
+    }
     public PurchasedItem(String itemName, Double price, String userBought) {
         itemPurchased = itemName;
         this.price = price;

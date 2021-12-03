@@ -1,11 +1,14 @@
 package edu.uga.cs.shoppinglistapp;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
@@ -13,9 +16,11 @@ import java.util.List;
 public class GroceryRecyclerAdapter extends RecyclerView.Adapter<GroceryRecyclerAdapter.GroceryItemHolder> {
     private List<GroceryItem> shoppingList;
     private List<GroceryItem> purchasingList;
+    private FragmentActivity context;
 
-    public GroceryRecyclerAdapter(List<GroceryItem> sList) {
+    public GroceryRecyclerAdapter(List<GroceryItem> sList, FragmentActivity context) {
         shoppingList = sList;
+        this.context = context;
     }
     public class GroceryItemHolder extends RecyclerView.ViewHolder {
         TextView itemName;
@@ -51,7 +56,8 @@ public class GroceryRecyclerAdapter extends RecyclerView.Adapter<GroceryRecycler
         holder.purchase.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                DialogFragment newFragment = PurchaseItemDialogFragment.newInstance(groceryItem);
+                ((ShoppingListFragment)context.getSupportFragmentManager().findFragmentByTag("f0")).showDialogFragment(newFragment);
             }
         });
     }
