@@ -6,6 +6,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="25dp"
+        android:text="Please enter Price of item"
+        app:layout_constraintBottom_toTopOf="@+id/purchaseText"
+        app:layout_constraintStart_toStartOf="@+id/purchaseText" />
+
     <EditText
         android:id="@+id/purchaseText"
         android:layout_width="wrap_content"
@@ -13,12 +22,13 @@
         android:layout_marginTop="60dp"
         android:ems="10"
         android:hint="Price"
+        android:inputType="numberDecimal"
         android:textColor="@color/black"
+        android:textColorHint="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:inputType="numberDecimal"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 
