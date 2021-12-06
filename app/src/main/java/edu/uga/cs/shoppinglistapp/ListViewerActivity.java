@@ -25,6 +25,7 @@ public class ListViewerActivity extends AppCompatActivity {
         logoutButton.setOnClickListener(new LogoutButtonClickListener());
     }
 
+    //Logout button listener
     private class LogoutButtonClickListener implements View.OnClickListener{
         @Override
         public void onClick( View view ){
