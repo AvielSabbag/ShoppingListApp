@@ -45,7 +45,7 @@
                 android:layout_weight="0"
                 android:fontFamily="@font/fugaz_one"
                 android:text="Active User: "
-                android:textSize="16sp" />
+                android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/textView7"
@@ -55,7 +55,7 @@
                 android:layout_weight="0"
                 android:fontFamily="@font/fugaz_one"
                 android:text="Money Owed: "
-                android:textSize="16sp" />
+                android:textSize="14sp" />
         </LinearLayout>
 
     </LinearLayout>
