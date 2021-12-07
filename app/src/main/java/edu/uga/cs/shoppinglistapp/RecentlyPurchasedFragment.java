@@ -20,6 +20,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -60,6 +61,18 @@ public class RecentlyPurchasedFragment extends Fragment {
         View fullView = inflater.inflate(R.layout.fragment_recently_purchased, container, false);
 
 
+//
+//        Button removeItem = fullView.findViewById(R.id.remove);
+//
+//        removeItem.setOnClickListener(new View.OnClickListener(){
+//
+//            @Override
+//            public void onClick(View v) {
+//                DialogFragment newFragment = new PurchaseItemDialogFragment();
+//                showDialogFragment(newFragment);
+//            }
+//        });
+
 
         /**newItem.setOnClickListener(new View.OnClickListener(){
 
@@ -69,6 +82,7 @@ public class RecentlyPurchasedFragment extends Fragment {
                 showDialogFragment(newFragment);
             }
         });*/
+
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("purchasedList");
         recyclerView = (RecyclerView) fullView.findViewById(R.id.purchaseListRecycler);
@@ -116,4 +130,58 @@ public class RecentlyPurchasedFragment extends Fragment {
     public void notifyRecycler() {
         recyclerAdapter.notifyItemInserted(purchasedList.size()-1);
     }
+
+//    public void onFinishNewPurchaseDialog(GroceryItem groceryItem) {
+//        FirebaseDatabase database = FirebaseDatabase.getInstance();
+//        DatabaseReference myRef = database.getReference();
+//        DatabaseReference purchasedList = database.getReference("purchasedList");
+//
+//        purchasedList.push().setValue( groceryItem )
+//                .addOnSuccessListener( new OnSuccessListener<Void>() {
+//                    @Override
+//                    public void onSuccess(Void aVoid) {
+//
+//                        Log.d( "ShoppingListFragment", "Grocery Item Purchased: " + groceryItem.toString() );
+//                        // Show a quick confirmation
+//                        Toast.makeText(getContext(), "Grocery Item Removed by: " + groceryItem.getUserSubmitted(),
+//                                Toast.LENGTH_SHORT).show();
+//                        //possibly not do anything else but maybe notify purchased recycler and add item to list in fragment
+//                        ShoppingListFragment shoppingListFragment = (ShoppingListFragment) getActivity().getSupportFragmentManager().findFragmentByTag("f0");
+//                        shoppingListFragment.addGroceryItem(groceryItem);
+//                        shoppingListFragment.notifyRecycler();
+//                    }
+//                })
+//                .addOnFailureListener( new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(Exception e) {
+//                        Toast.makeText( getContext(), "Failed to add grocery Item by: " + groceryItem.getUserSubmitted(),
+//                                Toast.LENGTH_SHORT).show();
+//                    }
+//                });
+//
+//        Query purchaseQuery = myRef.child("purchasedList").orderByChild("itemName").equalTo(groceryItem.getItemName());
+//
+//        purchaseQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                for (DataSnapshot purchaseSnapshot: dataSnapshot.getChildren()) {
+//                    purchaseSnapshot.getRef().removeValue();
+//
+//                    for(int i = 0; i<purchasedList.size(); i++) {
+//                        if(purchasedList.get(i).getItemName().equals(groceryItem.getItemName())) {
+//                            purchasedList.remove(i);
+//                            recyclerAdapter.notifyItemRemoved(i);
+//                        }
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//                Log.e("ShoppingListFragment", "onCancelled", databaseError.toException());
+//            }
+//        });
+
+
+
 }
