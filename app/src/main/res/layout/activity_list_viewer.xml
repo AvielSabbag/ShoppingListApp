@@ -52,6 +52,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
+                android:layout_marginBottom="10dp"
                 android:layout_weight="0"
                 android:fontFamily="@font/fugaz_one"
                 android:text="Money Owed: "

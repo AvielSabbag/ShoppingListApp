@@ -30,6 +30,7 @@ import java.util.List;
  */
 public class RecentlyPurchasedFragment extends Fragment {
     private List<PurchasedItem> purchasedList;
+    private Button settleTheScore;
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
     private PurchasedRecyclerAdapter recyclerAdapter;
@@ -58,8 +59,7 @@ public class RecentlyPurchasedFragment extends Fragment {
         // Inflate the layout for this fragment
         View fullView = inflater.inflate(R.layout.fragment_recently_purchased, container, false);
 
-        //Button newItem = fullView.findViewById(R.id.button5);
-        //Button purchasedItem = fullView.findViewById(R.id.button6);
+
 
         /**newItem.setOnClickListener(new View.OnClickListener(){
 
@@ -72,6 +72,7 @@ public class RecentlyPurchasedFragment extends Fragment {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("purchasedList");
         recyclerView = (RecyclerView) fullView.findViewById(R.id.purchaseListRecycler);
+        settleTheScore = (Button) fullView.findViewById(R.id.button5);
 
         purchasedList = new ArrayList<PurchasedItem>();
 
