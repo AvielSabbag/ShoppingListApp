@@ -4,8 +4,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
@@ -13,6 +15,7 @@ import java.util.List;
 public class PurchasedRecyclerAdapter extends RecyclerView.Adapter<PurchasedRecyclerAdapter.PurchasedItemHolder> {
     private List<PurchasedItem> purchasedList;
     //Comment
+    private FragmentActivity context;
     public PurchasedRecyclerAdapter(List<PurchasedItem> pList) {
         purchasedList = pList;
     }
@@ -20,6 +23,7 @@ public class PurchasedRecyclerAdapter extends RecyclerView.Adapter<PurchasedRecy
         TextView itemPurchased;
         TextView price;
         TextView userBought;
+        Button removeButton;
 
         public PurchasedItemHolder(View itemView) {
             super(itemView);
@@ -41,6 +45,13 @@ public class PurchasedRecyclerAdapter extends RecyclerView.Adapter<PurchasedRecy
         holder.itemPurchased.setText((CharSequence) purchasedItem.getItemPurchased());
         holder.price.setText( String.valueOf( purchasedItem.getPrice()));
         holder.userBought.setText(purchasedItem.getUserBought());
+
+//        holder.removeButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                ((RecentlyPurchasedFragment)context.getSupportFragmentManager().findFragmentByTag("f1")).removeGroceryItem(purchasedItem);
+//            }
+//        });
 
     }
 
