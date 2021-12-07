@@ -27,6 +27,7 @@ public class GroceryRecyclerAdapter extends RecyclerView.Adapter<GroceryRecycler
         TextView description;
         TextView userSubmitted;
         Button purchase;
+        Button remove;
 
         public GroceryItemHolder(View itemView) {
             super(itemView);
@@ -35,6 +36,7 @@ public class GroceryRecyclerAdapter extends RecyclerView.Adapter<GroceryRecycler
             description = (TextView) itemView.findViewById(R.id.cost);
             userSubmitted = (TextView) itemView.findViewById(R.id.userBoughtText);
             purchase = (Button) itemView.findViewById(R.id.remove);
+            remove = (Button) itemView.findViewById(R.id.button7);
         }
     }
 
@@ -58,6 +60,13 @@ public class GroceryRecyclerAdapter extends RecyclerView.Adapter<GroceryRecycler
             public void onClick(View v) {
                 DialogFragment newFragment = PurchaseItemDialogFragment.newInstance(groceryItem);
                 ((ShoppingListFragment)context.getSupportFragmentManager().findFragmentByTag("f0")).showDialogFragment(newFragment);
+            }
+        });
+
+        holder.remove.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((ShoppingListFragment)context.getSupportFragmentManager().findFragmentByTag("f0")).removeGroceryItem(groceryItem);
             }
         });
     }

@@ -169,9 +169,11 @@ public class ShoppingListFragment extends Fragment implements AddGroceryItemDial
                         Toast.makeText(getContext(), "Grocery Item Purchased by: " + purchasedItem.getUserBought(),
                                 Toast.LENGTH_SHORT).show();
                         //possibly not do anything else but maybe notify purchased recycler and add item to list in fragment
-                        RecentlyPurchasedFragment purchasedFragment = (RecentlyPurchasedFragment) getActivity().getSupportFragmentManager().findFragmentByTag("f1");
-                        purchasedFragment.addPurchasedItem(purchasedItem);
-                        purchasedFragment.notifyRecycler();
+                        if((RecentlyPurchasedFragment) getActivity().getSupportFragmentManager().findFragmentByTag("f1") != null) {
+                            RecentlyPurchasedFragment purchasedFragment = (RecentlyPurchasedFragment) getActivity().getSupportFragmentManager().findFragmentByTag("f1");
+                            purchasedFragment.addPurchasedItem(purchasedItem);
+                            purchasedFragment.notifyRecycler();
+                        }
                     }
                 })
                 .addOnFailureListener( new OnFailureListener() {
@@ -208,4 +210,31 @@ public class ShoppingListFragment extends Fragment implements AddGroceryItemDial
 
 
     }
+    public void removeGroceryItem(GroceryItem groceryItem) {
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference();
+        Query purchaseQuery = myRef.child("shoppingList").orderByChild("itemName").equalTo(groceryItem.getItemName());
+
+        purchaseQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot purchaseSnapshot : dataSnapshot.getChildren()) {
+                    purchaseSnapshot.getRef().removeValue();
+
+                    for (int i = 0; i < shoppingList.size(); i++) {
+                        if (shoppingList.get(i).getItemName().equals(groceryItem.getItemName())) {
+                            shoppingList.remove(i);
+                            recyclerAdapter.notifyItemRemoved(i);
+                        }
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e("ShoppingListFragment", "onCancelled", databaseError.toException());
+            }
+        });
+    }
+
 }
