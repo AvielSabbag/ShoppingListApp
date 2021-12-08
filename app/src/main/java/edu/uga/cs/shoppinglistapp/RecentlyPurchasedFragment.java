@@ -238,7 +238,7 @@ public class RecentlyPurchasedFragment extends Fragment {
         int balanceExistsReturns[] = balanceExists(userBought);
         if (balanceExistsReturns[0] == 0) {
             Log.d("SettleTheScore", "onClick: Apartment Name: " + findApartmentNameByEmail(userBought));
-            newBalance = new UserBalance(userBought, findApartmentNameByEmail(userBought), pItem.getPrice(), 0.00);
+            newBalance = new UserBalance(userBought, apartmentName, pItem.getPrice(), 0.00);
             balanceList.add(newBalance);
         } else {
             newBalance = new UserBalance(userBought, balanceList.get(balanceExistsReturns[1]).getAptName(),
