@@ -21,12 +21,15 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 public class ListViewerActivity extends AppCompatActivity {
     private TextView userOnline;
     private static TextView amountOwed;
     private static String apartmentName;
+    private static FirebaseDatabase database;
+    private static DatabaseReference balanceRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +41,8 @@ public class ListViewerActivity extends AppCompatActivity {
         Button logoutButton = findViewById(R.id.logout);
         userOnline = findViewById(R.id.textView8);
         amountOwed = findViewById(R.id.textView7);
+        database = FirebaseDatabase.getInstance();
+        balanceRef = database.getReference("userList");
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         setInfoUI(user.getEmail());
@@ -66,8 +71,11 @@ public class ListViewerActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot userSnapshot: dataSnapshot.getChildren()) {
                     UserBalance userBalance = userSnapshot.getValue(UserBalance.class);
+                    String amountSpent = new DecimalFormat("#.##").format(userBalance.getAmntSpent());
+                    String amntOwed = new DecimalFormat("#.##").format(userBalance.getAmntOwed());
+
                     userOnline.setText( "User Online: " + userBalance.getUser() + ";\n Residing in: " + userBalance.getAptName());
-                    amountOwed.setText("Amnt Spent: " + userBalance.getAmntSpent() + ";\t Amnt Owed: " + userBalance.getAmntOwed());
+                    amountOwed.setText("Amnt Spent: " + amountSpent + ";\t Amnt Owed: " + amntOwed);
                     apartmentName[0] = userBalance.getAptName();
 
                 }
@@ -81,33 +89,7 @@ public class ListViewerActivity extends AppCompatActivity {
 
         return apartmentName[0];
     }
-    public static String findApartmentNameByEmail(String email) {
-        apartmentName = " ";
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("userList");
-        Log.d("findApartment", "findApartmentNameByEmail:" + email);
 
-        Query roommateQuery = myRef.orderByChild("user").equalTo(email);
-
-        roommateQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot userSnapshot: dataSnapshot.getChildren()) {
-                    UserBalance userBalance = userSnapshot.getValue(UserBalance.class);
-                    Log.d("findApartmentName", "onDataChange: apartmentName: " + userBalance.getAptName());
-                    apartmentName = userBalance.getAptName();
-
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.e("ShoppingListFragment", "onCancelled", databaseError.toException());
-            }
-        });
-
-        return apartmentName;
-    }
 
     static void updateAmountSpentTextView(Double amntSpent) {
         amountOwed.setText("Amount Spent: "+ amntSpent.toString());

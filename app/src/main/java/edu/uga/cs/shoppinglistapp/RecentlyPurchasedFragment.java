@@ -47,6 +47,7 @@ public class RecentlyPurchasedFragment extends Fragment {
     private Double amntOwed;
     private static UserBalance newBalance;
     private static DatabaseReference balanceRef;
+    private static String apartmentName;
 
     public RecentlyPurchasedFragment() {
         // Required empty public constructor
@@ -85,18 +86,16 @@ public class RecentlyPurchasedFragment extends Fragment {
         settleTheScore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String apartmentName = "";
                 for (PurchasedItem pItem: purchasedList) {
                     Log.d("SettleTheScore", "userName: " + pItem.getUserBought());
-                    apartmentName = ListViewerActivity.findApartmentNameByEmail(pItem.getUserBought());
                     //add item cost to total list cost
                     totalListCost = totalListCost + pItem.getPrice();
                     //remove item from list
                     removePurchasedItem(pItem);
                 }
                 //calculate avgSpent
-                Log.d("RecentlyPurchasedFragment", "avgSpent- apartmentName: " + apartmentName);
-                List<UserBalance> userBalanceArrayList = getRoomates(apartmentName);
+                Log.d("RecentlyPurchased", "avgSpent- apartmentName: " + apartmentName);
+                List<UserBalance> userBalanceArrayList = balanceList;
                 avgSpent = totalListCost/userBalanceArrayList.size();
                 Log.d("SettleTheScore", " User 0: " + userBalanceArrayList.get(0));
                 Log.d("SettleTheScore", "User 1: " + userBalanceArrayList.get(1));
@@ -110,6 +109,8 @@ public class RecentlyPurchasedFragment extends Fragment {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                                Log.d("SettleTheScore", "User: "+ newBalance.getUser()+
+                                        "newAmountOwed: " + newBalance.getAmntOwed());
                                 userSnapshot.getRef().setValue(newBalance);
                             }
                         }
@@ -206,7 +207,7 @@ public class RecentlyPurchasedFragment extends Fragment {
 
     }
 
-    public void populateBalances() {
+    static public void populateBalances() {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("userList");
         myRef.addListenerForSingleValueEvent( new ValueEventListener() {
@@ -216,6 +217,7 @@ public class RecentlyPurchasedFragment extends Fragment {
                 // we need to iterate over the elements and place them on a List.
                 for( DataSnapshot postSnapshot: snapshot.getChildren() ) {
                     UserBalance userBalance = postSnapshot.getValue(UserBalance.class);
+                    apartmentName = userBalance.getAptName();
                     balanceList.add(userBalance);
                 }
             }
@@ -234,8 +236,8 @@ public class RecentlyPurchasedFragment extends Fragment {
         String userBought = pItem.getUserBought();
         int balanceExistsReturns[] = balanceExists(userBought);
         if (balanceExistsReturns[0] == 0) {
-            Log.d("SettleTheScore", "onClick: Apartment Name: " + ListViewerActivity.findApartmentNameByEmail(userBought));
-            newBalance = new UserBalance(userBought, ListViewerActivity.findApartmentNameByEmail(userBought), pItem.getPrice(), 0.00);
+            Log.d("SettleTheScore", "onClick: Apartment Name: " + findApartmentNameByEmail(userBought));
+            newBalance = new UserBalance(userBought, findApartmentNameByEmail(userBought), pItem.getPrice(), 0.00);
             balanceList.add(newBalance);
         } else {
             newBalance = new UserBalance(userBought, balanceList.get(balanceExistsReturns[1]).getAptName(),
@@ -244,12 +246,14 @@ public class RecentlyPurchasedFragment extends Fragment {
             balanceList.set(balanceExistsReturns[1], newBalance);
         }
         //add item cost to appropriate users amntSpent
-
-        Query userQuery = balanceRef.orderByChild("user").equalTo(userBought);
-        userQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        Query userQuery = database.getReference("userList").orderByChild("user").equalTo(userBought);
+        userQuery.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                    UserBalance userBalance = userSnapshot.getValue(UserBalance.class);
+                    Log.d("updateAmountSpent", "onDataChange: newAmountSpent: " + newBalance.getAmntSpent());
                     userSnapshot.getRef().setValue(newBalance);
                 }
             }
@@ -268,6 +272,7 @@ public class RecentlyPurchasedFragment extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
                     UserBalance uBalance = userSnapshot.getValue(UserBalance.class);
+                    Log.d("RecentlyPurchased", "getRoomates: user added:" + uBalance.getUser());
                     userBalances.add(uBalance);
                 }
             }
@@ -279,5 +284,31 @@ public class RecentlyPurchasedFragment extends Fragment {
         });
         Log.d("RecentlyPurchased", "getRoomates: " + userBalances.get(0));
         return userBalances;
+    }
+
+    static String findApartmentNameByEmail(String email) {
+        apartmentName = " ";
+        balanceRef.addListenerForSingleValueEvent( new ValueEventListener() {
+            @Override
+            public void onDataChange( DataSnapshot snapshot ) {
+                // Once we have a DataSnapshot object, knowing that this is a list,
+                // we need to iterate over the elements and place them on a List.
+                for( DataSnapshot postSnapshot: snapshot.getChildren() ) {
+                    UserBalance userBalance = postSnapshot.getValue(UserBalance.class);
+                    Log.d("findApartmentName", "onDataChange: user" + userBalance.getUser());
+                    if (userBalance.getUser().equals(email)) {
+                        Log.d("findApartmentName", "onDataChange: apartmentName: " + userBalance.getAptName());
+                        apartmentName = userBalance.getAptName();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d("PurchasedListFragment", "onCancelled: The read failed: " + databaseError.getMessage());
+            }
+        });
+
+        return apartmentName;
     }
 }
