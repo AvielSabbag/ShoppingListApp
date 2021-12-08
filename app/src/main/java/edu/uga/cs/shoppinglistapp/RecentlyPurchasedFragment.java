@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.firebase.ui.auth.data.model.User;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
@@ -26,15 +27,26 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.uga.cs.shoppinglistapp.ListViewerActivity;
+import edu.uga.cs.shoppinglistapp.PurchasedItem;
+import edu.uga.cs.shoppinglistapp.PurchasedRecyclerAdapter;
+import edu.uga.cs.shoppinglistapp.UserBalance;
+
 /**
 
  */
 public class RecentlyPurchasedFragment extends Fragment {
-    private List<PurchasedItem> purchasedList;
+    private static List<PurchasedItem> purchasedList;
+    private static List<UserBalance> balanceList;
     private Button settleTheScore;
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
     private PurchasedRecyclerAdapter recyclerAdapter;
+    private Double totalListCost;
+    private Double avgSpent;
+    private Double amntOwed;
+    private static UserBalance newBalance;
+    private static DatabaseReference balanceRef;
 
     public RecentlyPurchasedFragment() {
         // Required empty public constructor
@@ -60,33 +72,53 @@ public class RecentlyPurchasedFragment extends Fragment {
         // Inflate the layout for this fragment
         View fullView = inflater.inflate(R.layout.fragment_recently_purchased, container, false);
 
-
-//
-//        Button removeItem = fullView.findViewById(R.id.remove);
-//
-//        removeItem.setOnClickListener(new View.OnClickListener(){
-//
-//            @Override
-//            public void onClick(View v) {
-//                DialogFragment newFragment = new PurchaseItemDialogFragment();
-//                showDialogFragment(newFragment);
-//            }
-//        });
-
-
-        /**newItem.setOnClickListener(new View.OnClickListener(){
-
-            @Override
-            public void onClick(View v) {
-                DialogFragment newFragment = new DialogFragment();
-                showDialogFragment(newFragment);
-            }
-        });*/
-
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("purchasedList");
+        balanceRef = database.getReference("userList");
         recyclerView = (RecyclerView) fullView.findViewById(R.id.purchaseListRecycler);
         settleTheScore = (Button) fullView.findViewById(R.id.button5);
+        balanceList = new ArrayList<UserBalance>();
+        populateBalances();
+        newBalance = new UserBalance();
+        totalListCost = 0.00;
+
+        settleTheScore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String apartmentName = "";
+                for (PurchasedItem pItem: purchasedList) {
+                    apartmentName = ListViewerActivity.findApartmentNameByEmail(pItem.getUserBought());
+                    //add item cost to total list cost
+                    totalListCost = totalListCost + pItem.getPrice();
+                    //remove item from list
+                    removePurchasedItem(pItem);
+                }
+                //calculate avgSpent
+                List<UserBalance> userBalanceArrayList = getRoomates(apartmentName);
+                avgSpent = totalListCost/userBalanceArrayList.size();
+                //for each roomate(amntOwed = amntSpent - avgSpent)
+                for (UserBalance u: userBalanceArrayList) {
+                    amntOwed = u.getAmntSpent() - avgSpent;
+                    UserBalance newBalance = new UserBalance(u.getUser(), u.getAptName(), 0.00, (u.getAmntOwed() + amntOwed));
+                    Query userQuery = balanceRef.orderByChild("user").equalTo(u.getUser());
+                    userQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                                userSnapshot.getRef().setValue(newBalance);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            Log.e("ShoppingListFragment", "onCancelled", databaseError.toException());
+                        }
+                    });
+                }
+
+            }
+
+        });
 
         purchasedList = new ArrayList<PurchasedItem>();
 
@@ -130,58 +162,116 @@ public class RecentlyPurchasedFragment extends Fragment {
     public void notifyRecycler() {
         recyclerAdapter.notifyItemInserted(purchasedList.size()-1);
     }
+    static public int[] balanceExists(String email) {
+        int returns[] = new int[2];
+        returns = new int[]{0, 0};
+        for (int i = 0; i<balanceList.size(); i++) {
+            if (email.equals(balanceList.get(i).getUser())) {
+                returns = new int[]{1, i};
+            }
+        }
+        return returns;
+    }
 
-//    public void onFinishNewPurchaseDialog(GroceryItem groceryItem) {
-//        FirebaseDatabase database = FirebaseDatabase.getInstance();
-//        DatabaseReference myRef = database.getReference();
-//        DatabaseReference purchasedList = database.getReference("purchasedList");
-//
-//        purchasedList.push().setValue( groceryItem )
-//                .addOnSuccessListener( new OnSuccessListener<Void>() {
-//                    @Override
-//                    public void onSuccess(Void aVoid) {
-//
-//                        Log.d( "ShoppingListFragment", "Grocery Item Purchased: " + groceryItem.toString() );
-//                        // Show a quick confirmation
-//                        Toast.makeText(getContext(), "Grocery Item Removed by: " + groceryItem.getUserSubmitted(),
-//                                Toast.LENGTH_SHORT).show();
-//                        //possibly not do anything else but maybe notify purchased recycler and add item to list in fragment
-//                        ShoppingListFragment shoppingListFragment = (ShoppingListFragment) getActivity().getSupportFragmentManager().findFragmentByTag("f0");
-//                        shoppingListFragment.addGroceryItem(groceryItem);
-//                        shoppingListFragment.notifyRecycler();
-//                    }
-//                })
-//                .addOnFailureListener( new OnFailureListener() {
-//                    @Override
-//                    public void onFailure(Exception e) {
-//                        Toast.makeText( getContext(), "Failed to add grocery Item by: " + groceryItem.getUserSubmitted(),
-//                                Toast.LENGTH_SHORT).show();
-//                    }
-//                });
-//
-//        Query purchaseQuery = myRef.child("purchasedList").orderByChild("itemName").equalTo(groceryItem.getItemName());
-//
-//        purchaseQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                for (DataSnapshot purchaseSnapshot: dataSnapshot.getChildren()) {
-//                    purchaseSnapshot.getRef().removeValue();
-//
-//                    for(int i = 0; i<purchasedList.size(); i++) {
-//                        if(purchasedList.get(i).getItemName().equals(groceryItem.getItemName())) {
-//                            purchasedList.remove(i);
-//                            recyclerAdapter.notifyItemRemoved(i);
-//                        }
-//                    }
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//                Log.e("ShoppingListFragment", "onCancelled", databaseError.toException());
-//            }
-//        });
+    public void removePurchasedItem(PurchasedItem pItem) {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference();
+        Query purchaseQuery = myRef.child("purchasedList").orderByChild("itemPurchased").equalTo(pItem.getItemPurchased());
+
+        purchaseQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot purchaseSnapshot : dataSnapshot.getChildren()) {
+                    purchaseSnapshot.getRef().removeValue();
+
+                    for (int i = 0; i < purchasedList.size(); i++) {
+                        if (purchasedList.get(i).getItemPurchased().equals(pItem.getItemPurchased())) {
+                            purchasedList.remove(i);
+                            recyclerAdapter.notifyItemRemoved(i);
+                        }
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e("ShoppingListFragment", "onCancelled", databaseError.toException());
+            }
+        });
 
 
+    }
 
+    public void populateBalances() {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("userList");
+        myRef.addListenerForSingleValueEvent( new ValueEventListener() {
+            @Override
+            public void onDataChange( DataSnapshot snapshot ) {
+                // Once we have a DataSnapshot object, knowing that this is a list,
+                // we need to iterate over the elements and place them on a List.
+                for( DataSnapshot postSnapshot: snapshot.getChildren() ) {
+                    UserBalance userBalance = postSnapshot.getValue(UserBalance.class);
+                    balanceList.add(userBalance);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d("PurchasedListFragment", "onCancelled: The read failed: " + databaseError.getMessage());
+            }
+        });
+    }
+
+    static void updateAmountSpent(PurchasedItem pItem) {
+        for (int i = 0; i<balanceList.size(); i++) {
+            Log.d("SettleTheScore", "onClick: balanceList Node " + i + ": " + balanceList.get(i).getAptName());
+        }
+        String userBought = pItem.getUserBought();
+        int balanceExistsReturns[] = balanceExists(userBought);
+        if (balanceExistsReturns[0] == 0) {
+            Log.d("SettleTheScore", "onClick: Apartment Name: " + ListViewerActivity.findApartmentNameByEmail(userBought));
+            newBalance = new UserBalance(userBought, ListViewerActivity.findApartmentNameByEmail(userBought), pItem.getPrice(), 0.00);
+            balanceList.add(newBalance);
+        } else {
+            newBalance = new UserBalance(userBought, balanceList.get(balanceExistsReturns[1]).getAptName(),
+                    (balanceList.get(balanceExistsReturns[1]).getAmntSpent() + pItem.getPrice()),
+                    balanceList.get(balanceExistsReturns[1]).getAmntOwed());
+            balanceList.set(balanceExistsReturns[1], newBalance);
+        }
+        //add item cost to appropriate users amntSpent
+
+        Query userQuery = balanceRef.orderByChild("user").equalTo(userBought);
+        userQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                    userSnapshot.getRef().setValue(newBalance);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e("ShoppingListFragment", "onCancelled", databaseError.toException());
+            }
+        });
+    }
+    public List<UserBalance> getRoomates(String apartmentName) {
+        final List<UserBalance> userBalances = new ArrayList<UserBalance>();
+        Query userQuery = balanceRef.orderByChild("aptName").equalTo(apartmentName);
+        userQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                    UserBalance uBalance = userSnapshot.getValue(UserBalance.class);
+                    userBalances.add(uBalance);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e("ShoppingListFragment", "onCancelled", databaseError.toException());
+            }
+        });
+        return userBalances;
+    }
 }

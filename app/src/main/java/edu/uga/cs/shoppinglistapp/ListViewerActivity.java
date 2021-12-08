@@ -24,7 +24,8 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.List;
 
 public class ListViewerActivity extends AppCompatActivity {
-
+    private TextView userOnline;
+    private static TextView amountOwed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,31 +35,11 @@ public class ListViewerActivity extends AppCompatActivity {
         GroceryPagerAdapter groceryPagerAdapter = new GroceryPagerAdapter(this, this);
         viewPager.setAdapter(groceryPagerAdapter);
         Button logoutButton = findViewById(R.id.logout);
-        TextView userOnline = findViewById(R.id.textView8);
-        TextView amountOwed = findViewById(R.id.textView7);
-
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference();
+        userOnline = findViewById(R.id.textView8);
+        amountOwed = findViewById(R.id.textView7);
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
-        Query purchaseQuery = myRef.child("userList").orderByChild("user").equalTo(user.getEmail());
-
-        purchaseQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot userSnapshot: dataSnapshot.getChildren()) {
-                    UserBalance userBalance = userSnapshot.getValue(UserBalance.class);
-                    userOnline.setText( "User Online: " + userBalance.getUser() + ";\n Residing in: " + userBalance.getAptName());
-                    amountOwed.setText("Amnt Spent: " + userBalance.getAmntSpent() + ";\t Amnt Owed: " + userBalance.getAmntOwed());
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.e("ShoppingListFragment", "onCancelled", databaseError.toException());
-            }
-        });
+        setInfoUI(user.getEmail());
 
         logoutButton.setOnClickListener(new LogoutButtonClickListener());
     }
@@ -70,6 +51,64 @@ public class ListViewerActivity extends AppCompatActivity {
             Intent intent = new Intent(view.getContext(), MainActivity.class);
             view.getContext().startActivity(intent);
         }
+    }
+
+    public String setInfoUI(String email) {
+        final String[] apartmentName = {"empty"};
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference();
+
+        Query purchaseQuery = myRef.child("userList").orderByChild("user").equalTo(email);
+
+        purchaseQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot userSnapshot: dataSnapshot.getChildren()) {
+                    UserBalance userBalance = userSnapshot.getValue(UserBalance.class);
+                    userOnline.setText( "User Online: " + userBalance.getUser() + ";\n Residing in: " + userBalance.getAptName());
+                    amountOwed.setText("Amnt Spent: " + userBalance.getAmntSpent() + ";\t Amnt Owed: " + userBalance.getAmntOwed());
+                    apartmentName[0] = userBalance.getAptName();
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e("ShoppingListFragment", "onCancelled", databaseError.toException());
+            }
+        });
+
+        return apartmentName[0];
+    }
+    public static String findApartmentNameByEmail(String email) {
+        final String[] apartmentName = new String[1];
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference();
+
+        Query purchaseQuery = myRef.child("userList").orderByChild("user").equalTo(email);
+
+        purchaseQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot userSnapshot: dataSnapshot.getChildren()) {
+                    UserBalance userBalance = userSnapshot.getValue(UserBalance.class);
+                    Log.d("findApartmentName", "onDataChange: apartmentName: " + userBalance.getAptName());
+                    apartmentName[0] = userBalance.getAptName();
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e("ShoppingListFragment", "onCancelled", databaseError.toException());
+            }
+        });
+
+        return apartmentName[0];
+    }
+
+    static void updateAmountSpentTextView(Double amntSpent) {
+        amountOwed.setText("Amount Spent: "+ amntSpent.toString());
     }
 
 
