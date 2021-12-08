@@ -86,6 +86,7 @@ public class RecentlyPurchasedFragment extends Fragment {
         settleTheScore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                populateBalances();
                 for (PurchasedItem pItem: purchasedList) {
                     Log.d("SettleTheScore", "userName: " + pItem.getUserBought());
                     //add item cost to total list cost
