@@ -233,6 +233,7 @@ public class RecentlyPurchasedFragment extends Fragment {
         for (int i = 0; i<balanceList.size(); i++) {
             Log.d("SettleTheScore", "onClick: balanceList Node " + i + ": " + balanceList.get(i).getAptName());
         }
+        populateBalances();
         String userBought = pItem.getUserBought();
         int balanceExistsReturns[] = balanceExists(userBought);
         if (balanceExistsReturns[0] == 0) {
