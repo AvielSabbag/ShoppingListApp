@@ -97,21 +97,21 @@ public class RecentlyPurchasedFragment extends Fragment {
                 Log.d("RecentlyPurchased", "avgSpent- apartmentName: " + apartmentName);
                 List<UserBalance> userBalanceArrayList = balanceList;
                 avgSpent = totalListCost/userBalanceArrayList.size();
-                Log.d("SettleTheScore", " User 0: " + userBalanceArrayList.get(0));
-                Log.d("SettleTheScore", "User 1: " + userBalanceArrayList.get(1));
+                Log.d("SettleTheScore", " User 0: " + userBalanceArrayList.get(0).getUser());
+                Log.d("SettleTheScore", "User 1: " + userBalanceArrayList.get(1).getUser());
                 //for each roomate(amntOwed = amntSpent - avgSpent)
                 for (UserBalance u: userBalanceArrayList) {
                     amntOwed = u.getAmntSpent() - avgSpent;
-                    UserBalance newBalance = new UserBalance(u.getUser(), u.getAptName(), 0.00, (u.getAmntOwed() + amntOwed));
+                    UserBalance newUserBalance = new UserBalance(u.getUser(), u.getAptName(), 0.00, (u.getAmntOwed() + amntOwed));
 
                     Query userQuery = balanceRef.orderByChild("user").equalTo(u.getUser());
                     userQuery.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
-                                Log.d("SettleTheScore", "User: "+ newBalance.getUser()+
-                                        "newAmountOwed: " + newBalance.getAmntOwed());
-                                userSnapshot.getRef().setValue(newBalance);
+                                Log.d("SettleTheScore", "User: "+ newUserBalance.getUser()+
+                                        "newAmountOwed: " + newUserBalance.getAmntOwed());
+                                userSnapshot.getRef().setValue(newUserBalance);
                             }
                         }
 
