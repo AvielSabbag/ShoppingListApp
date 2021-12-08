@@ -37,7 +37,7 @@ import edu.uga.cs.shoppinglistapp.UserBalance;
  */
 public class RecentlyPurchasedFragment extends Fragment {
     private static List<PurchasedItem> purchasedList;
-    private static List<UserBalance> balanceList;
+    private static List<UserBalance> balanceList = new ArrayList<UserBalance>();
     private Button settleTheScore;
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
@@ -78,7 +78,6 @@ public class RecentlyPurchasedFragment extends Fragment {
         balanceRef = database.getReference("userList");
         recyclerView = (RecyclerView) fullView.findViewById(R.id.purchaseListRecycler);
         settleTheScore = (Button) fullView.findViewById(R.id.button5);
-        balanceList = new ArrayList<UserBalance>();
         populateBalances();
         newBalance = new UserBalance();
         totalListCost = 0.00;
