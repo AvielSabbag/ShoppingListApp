@@ -256,6 +256,7 @@ public class RecentlyPurchasedFragment extends Fragment {
                     UserBalance userBalance = userSnapshot.getValue(UserBalance.class);
                     Log.d("updateAmountSpent", "onDataChange: newAmountSpent: " + newBalance.getAmntSpent());
                     userSnapshot.getRef().setValue(newBalance);
+                    ListViewerActivity.updateAmountSpentTextView("Amount Spent: "+ newBalance.getAmntSpent() + "; Amount Owed: " + newBalance.getAmntOwed());
                 }
             }
 

@@ -91,8 +91,8 @@ public class ListViewerActivity extends AppCompatActivity {
     }
 
 
-    static void updateAmountSpentTextView(Double amntSpent) {
-        amountOwed.setText("Amount Spent: "+ amntSpent.toString());
+    static void updateAmountSpentTextView(String amntSpent) {
+        amountOwed.setText(amntSpent);
     }
 
 

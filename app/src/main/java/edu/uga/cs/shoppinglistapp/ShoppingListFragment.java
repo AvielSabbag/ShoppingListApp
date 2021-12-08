@@ -202,6 +202,7 @@ public class ShoppingListFragment extends Fragment implements AddGroceryItemDial
                 }
             }
 
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Log.e("ShoppingListFragment", "onCancelled", databaseError.toException());
