@@ -173,8 +173,8 @@ public class ShoppingListFragment extends Fragment implements AddGroceryItemDial
                             RecentlyPurchasedFragment purchasedFragment = (RecentlyPurchasedFragment) getActivity().getSupportFragmentManager().findFragmentByTag("f1");
                             purchasedFragment.addPurchasedItem(purchasedItem);
                             purchasedFragment.notifyRecycler();
-                            RecentlyPurchasedFragment.updateAmountSpent(purchasedItem);
                         }
+                        RecentlyPurchasedFragment.updateAmountSpent(purchasedItem);
                     }
                 })
                 .addOnFailureListener( new OnFailureListener() {
