@@ -87,6 +87,7 @@ public class RecentlyPurchasedFragment extends Fragment {
             public void onClick(View v) {
                 String apartmentName = "";
                 for (PurchasedItem pItem: purchasedList) {
+                    Log.d("SettleTheScore", "userName: " + pItem.getUserBought());
                     apartmentName = ListViewerActivity.findApartmentNameByEmail(pItem.getUserBought());
                     //add item cost to total list cost
                     totalListCost = totalListCost + pItem.getPrice();
@@ -94,12 +95,16 @@ public class RecentlyPurchasedFragment extends Fragment {
                     removePurchasedItem(pItem);
                 }
                 //calculate avgSpent
+                Log.d("RecentlyPurchasedFragment", "avgSpent- apartmentName: " + apartmentName);
                 List<UserBalance> userBalanceArrayList = getRoomates(apartmentName);
                 avgSpent = totalListCost/userBalanceArrayList.size();
+                Log.d("SettleTheScore", " User 0: " + userBalanceArrayList.get(0));
+                Log.d("SettleTheScore", "User 1: " + userBalanceArrayList.get(1));
                 //for each roomate(amntOwed = amntSpent - avgSpent)
                 for (UserBalance u: userBalanceArrayList) {
                     amntOwed = u.getAmntSpent() - avgSpent;
                     UserBalance newBalance = new UserBalance(u.getUser(), u.getAptName(), 0.00, (u.getAmntOwed() + amntOwed));
+
                     Query userQuery = balanceRef.orderByChild("user").equalTo(u.getUser());
                     userQuery.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -272,6 +277,7 @@ public class RecentlyPurchasedFragment extends Fragment {
                 Log.e("ShoppingListFragment", "onCancelled", databaseError.toException());
             }
         });
+        Log.d("RecentlyPurchased", "getRoomates: " + userBalances.get(0));
         return userBalances;
     }
 }

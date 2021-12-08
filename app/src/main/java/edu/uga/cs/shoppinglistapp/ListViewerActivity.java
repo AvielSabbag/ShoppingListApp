@@ -26,6 +26,7 @@ import java.util.List;
 public class ListViewerActivity extends AppCompatActivity {
     private TextView userOnline;
     private static TextView amountOwed;
+    private static String apartmentName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,19 +82,20 @@ public class ListViewerActivity extends AppCompatActivity {
         return apartmentName[0];
     }
     public static String findApartmentNameByEmail(String email) {
-        final String[] apartmentName = new String[1];
+        apartmentName = " ";
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference();
+        DatabaseReference myRef = database.getReference("userList");
+        Log.d("findApartment", "findApartmentNameByEmail:" + email);
 
-        Query purchaseQuery = myRef.child("userList").orderByChild("user").equalTo(email);
+        Query roommateQuery = myRef.orderByChild("user").equalTo(email);
 
-        purchaseQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+        roommateQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot userSnapshot: dataSnapshot.getChildren()) {
                     UserBalance userBalance = userSnapshot.getValue(UserBalance.class);
                     Log.d("findApartmentName", "onDataChange: apartmentName: " + userBalance.getAptName());
-                    apartmentName[0] = userBalance.getAptName();
+                    apartmentName = userBalance.getAptName();
 
                 }
             }
@@ -104,7 +106,7 @@ public class ListViewerActivity extends AppCompatActivity {
             }
         });
 
-        return apartmentName[0];
+        return apartmentName;
     }
 
     static void updateAmountSpentTextView(Double amntSpent) {
