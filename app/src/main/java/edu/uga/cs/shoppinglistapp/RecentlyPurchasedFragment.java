@@ -46,8 +46,10 @@ public class RecentlyPurchasedFragment extends Fragment {
     private Double avgSpent;
     private Double amntOwed;
     private static UserBalance newBalance;
-    private static DatabaseReference balanceRef;
+    private static FirebaseDatabase database = FirebaseDatabase.getInstance();
+    private static DatabaseReference myRef = database.getReference("purchasedList");
     private static String apartmentName;
+    private static DatabaseReference balanceRef = database.getReference("userList");
 
     public RecentlyPurchasedFragment() {
         // Required empty public constructor
@@ -73,9 +75,7 @@ public class RecentlyPurchasedFragment extends Fragment {
         // Inflate the layout for this fragment
         View fullView = inflater.inflate(R.layout.fragment_recently_purchased, container, false);
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("purchasedList");
-        balanceRef = database.getReference("userList");
+
         recyclerView = (RecyclerView) fullView.findViewById(R.id.purchaseListRecycler);
         settleTheScore = (Button) fullView.findViewById(R.id.button5);
         populateBalances();
